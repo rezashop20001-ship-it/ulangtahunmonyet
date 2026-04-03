@@ -1,2 +1,2 @@
-# bukaini-nduttt
-ada kejutan💐🤍
+# bukaini-nyettt
+ada kejutan💐💙
