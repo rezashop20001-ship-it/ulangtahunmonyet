@@ -14,10 +14,16 @@
       color: white;
       height: 100vh;
       background: url('album1.jpg') no-repeat center/cover;
+      overflow-x: hidden;
     }
 
     .ctnr { position: relative; z-index: 2; margin-top: 40px; }
-    .lv img { width: 150px; cursor: pointer; }
+    .lv img { width: 150px; cursor: pointer; animation: pulse 1.3s infinite; }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
     .lv p { margin-top: 10px; font-weight: 600; }
 
     .ucapan, .pesanBox { display: none; margin-top: 30px; }
@@ -32,10 +38,35 @@
     }
 
     .foto1x1 { display: none; }
-    .foto1x1 img { width: 250px; height: 250px; object-fit: cover; margin: 10px; border-radius: 20px; }
+    .foto4-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      width: 80%;
+      max-width: 350px;
+      margin: 0 auto;
+    }
+
+    .foto4-container img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
 
     .videoBox { display: none; }
-    video { width: 300px; height: 300px; border-radius: 20px; margin-top: 10px; }
+    video {
+      width: 80%;
+      max-width: 360px;
+      border-radius: 20px;
+      display: block;
+      margin: 0 auto;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+
     .fotoKecil { display: flex; justify-content: center; gap: 15px; margin-top: 15px; }
     .fotoKecil img { width: 130px; height: 130px; object-fit: cover; border-radius: 15px; }
 
@@ -72,6 +103,22 @@
       font-weight: 600;
       white-space: pre-wrap;
     }
+
+    /* --- Efek balon beterbangan --- */
+    .balloon {
+      position: fixed;
+      bottom: -50px;
+      font-size: 2rem;
+      animation: naik 6s linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes naik {
+      0% { transform: translateY(0) scale(1); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-120vh) scale(1.2); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -89,10 +136,12 @@
 
     <div class="foto1x1" id="fotoSection">
       <p class="judul">Happy birthday yang ke 20 ya ndutt💐</p>
-      <img src="foto1.jpg">
-      <img src="foto2.jpg">
-      <img src="foto3.jpg">
-      <img src="foto4.jpg">
+      <div class="foto4-container">
+        <img src="foto1.jpg">
+        <img src="foto2.jpg">
+        <img src="foto3.jpg">
+        <img src="foto4.jpg">
+      </div>
       <button class="btn" id="nextFoto">[ Lanjut ]</button>
     </div>
 
@@ -109,11 +158,11 @@
     </div>
 
     <div class="emotAkhir" id="emotSection">
-      🎉🎂🌷🤍💐
+      Lezaa&Ungaa🌷🤍
     </div>
 
     <div class="pesanBox" id="pesanBox">
-      <p style="font-weight:600;">Sekarang giliran kamu kirim pesan buat Eja 💌</p>
+      <p style="font-weight:600;">Sekarang giliran ndutt kirim pesan untuk ejaa📩</p>
       <input type="text" id="inputPesan" placeholder="Ketik pesan disini...">
       <br/>
       <button class="btn" id="kirimBtn">Kirim Pesan</button>
@@ -136,8 +185,8 @@
     {gambar: "stiker11.gif", ucapan: "Semoga semua rencana indah ndutt terwujud satu per satu ✨"},
     {gambar: "stiker12.gif", ucapan: "Semoga selalu dilindungi dan dikuatkan dalam segala hal 🌈"},
     {gambar: "stiker13.gif", ucapan: "Olahraga jalan terus nda putus putus ✨"},
-    {gambar: "stiker14.gif", ucapan: "Teruss apaa yaa, ndutt makinn cantikk kaya loveni 💕"},
-    {gambar: "stiker15.gif", ucapan: "Oiya ini rezza buatin web sederhana cuman yaa ndutt, pusing nyoba 20x lebih gonta ganti😭, jadi ndaa terlalu mewah hehe💐"},
+    {gambar: "stiker14.gif", ucapan: "Teruss apaa yaa, ndutt makinn cantikk kaya loveni yakann 💕"},
+    {gambar: "stiker15.gif", ucapan: "Oiya ini rezza buatin web sederhana cuman yaa ndutt, pusing buatnya 4 harian gonta ganti kodingan😭, jadi ndaa terlalu mewah hehe💐"},
     {gambar: "stiker16.gif", ucapan: "Jangan lupa rumah filda abis isya ❤️"}, 
     {gambar: "stiker17.gif", ucapan: "Terakhir Semoga kita dimudahkan sama Allah untuk bersama Amiin 🤍🌻"}
   ];
@@ -184,6 +233,10 @@
   nextVideo.addEventListener("click", () => {
     videoSection.style.display = "none";
     emotSection.style.display = "block";
+    setTimeout(() => {
+      munculkanBalon();
+      pesanBox.style.display = "block";
+    }, 1000);
   });
 
   kirimBtn.addEventListener("click", () => {
@@ -198,6 +251,20 @@
   function tampilkanUcapan(){
     stikerImg.src = konten[index].gambar;
     teksUcapan.innerText = konten[index].ucapan;
+  }
+
+  // 🎈 Efek Balon Naik
+  function munculkanBalon(){
+    const emoji = ["🎈","🎉","🎂","💐","🎊","🌸"];
+    setInterval(() => {
+      const b = document.createElement("div");
+      b.className = "balloon";
+      b.textContent = emoji[Math.floor(Math.random()*emoji.length)];
+      b.style.left = Math.random()*100 + "vw";
+      b.style.animationDuration = (4 + Math.random()*4) + "s";
+      document.body.appendChild(b);
+      setTimeout(() => b.remove(), 7000);
+    }, 400);
   }
 
   let musik = new Audio("musik.mp3");
